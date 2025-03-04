@@ -17,7 +17,7 @@ def test_train_model():
     processed_data = fraud_detector.preprocess_data(df)
     
     exclude_cols = ['fraud_flag', 'customer_id', 'order_id', 'claim_id', 'claim_timestamp', 
-                   'order_timestamp', 'delivery_timestamp', 'claim_description', 'cleaned_description']
+                   'order_timestamp', 'delivery_timestamp', 'claim_description']
     
     feature_cols = [col for col in processed_data.columns if col not in exclude_cols]
     

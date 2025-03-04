@@ -1,7 +1,7 @@
 def predict(model, test_processed):
     # Define features
     exclude_cols = ['fraud_flag', 'customer_id', 'order_id', 'claim_id', 'claim_timestamp', 
-                   'order_timestamp', 'delivery_timestamp', 'claim_description', 'cleaned_description']
+                   'order_timestamp', 'delivery_timestamp', 'claim_description']
     
     feature_cols = [col for col in test_processed.columns if col not in exclude_cols]
     

@@ -121,6 +121,8 @@ class RefundFraudDetectionSystem:
         df = pd.merge(df, recent_claims[['customer_id', 'repeated_reason', 'avg_days_between_claims']], 
                      on='customer_id', how='left')
         
+        # Fill NaN values in 'avg_days_between_claims' with 0
+        df['avg_days_between_claims'] = df['avg_days_between_claims'].fillna(0)
         # Calculate z-score for claim timing pattern
         df['claim_timing_zscore'] = (df['avg_days_between_claims'] - df['avg_days_between_claims'].mean()) / df['avg_days_between_claims'].std()
         
@@ -128,6 +130,14 @@ class RefundFraudDetectionSystem:
         if 'claim_description' in df.columns:
             df['cleaned_description'] = df['claim_description'].apply(self._clean_text)
         
+        # Fill NaN values in numerical columns with 0
+        numerical_cols = df.select_dtypes(include=['int64', 'float64']).columns
+        df[numerical_cols] = df[numerical_cols].fillna(0)
+
+# Fill NaN values in categorical columns with 'unknown'
+        categorical_cols = df.select_dtypes(include=['object', 'category']).columns
+        df[categorical_cols] = df[categorical_cols].fillna('unknown')
+
         return df
     
     def _clean_text(self, text):
@@ -225,6 +235,10 @@ class RefundFraudDetectionSystem:
         # Combine with text features if available
         if text_features_train is not None:
             X_train_processed = np.hstack([X_train_processed.toarray(), text_features_train.toarray()])
+
+        # Debug: Check for NaN or infinite values
+        print("NaN values in X_train_processed:", np.isnan(X_train_processed).sum())
+        print("Infinite values in X_train_processed:", np.isinf(X_train_processed).sum())
         
         # Handle class imbalance with SMOTE
         smote = SMOTE(random_state=42)

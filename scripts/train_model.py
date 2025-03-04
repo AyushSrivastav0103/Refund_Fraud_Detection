@@ -7,13 +7,15 @@ def train_model(train_processed):
     
     # Define features and target
     exclude_cols = ['fraud_flag', 'customer_id', 'order_id', 'claim_id', 'claim_timestamp', 
-                   'order_timestamp', 'delivery_timestamp', 'claim_description', 'cleaned_description']
+                   'order_timestamp', 'delivery_timestamp', 'claim_description']
     
     feature_cols = [col for col in train_processed.columns if col not in exclude_cols]
     
     X_train = train_processed[feature_cols]
     y_train = train_processed['fraud_flag']
     
+     # Debug: Check X_train columns
+    # print("Columns in X_train:", X_train.columns.tolist())
     # Extract text features
     text_features_train = fraud_detector.engineer_features(train_processed)
     
